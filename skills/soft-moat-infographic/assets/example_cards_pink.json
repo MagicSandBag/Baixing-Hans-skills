@@ -1,0 +1,58 @@
+{
+  "layout": "cards",
+  "theme": "social-pink",
+  "width": 1080,
+  "height": 576,
+  "eyebrow": "SOCIAL PLATFORM GUIDE · 平台选择",
+  "title": "选对平台，比努力更新更重要",
+  "subtitle": "5 PLATFORMS · CONTENT FIT · GROWTH · MONETIZATION",
+  "watermark": "SOCIAL",
+  "credit": "by @白星Hans",
+  "cards": [
+    {
+      "label": "长视频",
+      "heading": "B站",
+      "metric": "周更",
+      "metric_suffix": "1-2条",
+      "body": "社区氛围强，适合课程、评测与人设沉淀。",
+      "badge": "深度友好",
+      "accent": "pink"
+    },
+    {
+      "label": "种草图文",
+      "heading": "小红书",
+      "metric": "日更",
+      "metric_suffix": "1-3条",
+      "body": "搜索心智强，适合决策型消费内容。",
+      "badge": "搜索长尾",
+      "accent": "coral"
+    },
+    {
+      "label": "短视频",
+      "heading": "抖音",
+      "metric": "日更",
+      "metric_suffix": "2-5条",
+      "body": "爆发快衰减也快，适合大众化情绪内容。",
+      "badge": "流量最大",
+      "accent": "blue"
+    },
+    {
+      "label": "私域沉淀",
+      "heading": "视频号",
+      "metric": "周更",
+      "metric_suffix": "3-5条",
+      "body": "依托熟人链传播，信任转化率高。",
+      "badge": "转链最短",
+      "accent": "green"
+    },
+    {
+      "label": "热点广场",
+      "heading": "微博",
+      "metric": "随热点",
+      "metric_suffix": "高频",
+      "body": "话题传播快，适合借势发声与公关。",
+      "badge": "热点引擎",
+      "accent": "amber"
+    }
+  ]
+}

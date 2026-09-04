@@ -6,7 +6,7 @@ Claude Code 技能(Skills)合集,存放可复用的个人技能包。
 
 | 技能 | 说明 |
 | --- | --- |
-| [soft-moat-infographic](skills/soft-moat-infographic/SKILL.md) | 生成柔和粉彩风格的中文信息图卡片(对比卡片 / 三步论证流程),HTML/CSS 渲染导出图片 |
+| [soft-moat-infographic](skills/soft-moat-infographic/SKILL.md) | 生成柔和粉彩风格的中文信息图卡片(对比卡片 / 三步论证流程),HTML/CSS 渲染导出图片;支持经典冷白 / 社交粉(B站风)两套主题配色 |
 
 ## 使用方式
 
@@ -29,7 +29,8 @@ skills/
 └── soft-moat-infographic/
     ├── SKILL.md            # 技能定义(入口)
     ├── agents/             # agent 配置
-    ├── assets/             # 示例数据
+    ├── assets/             # 示例输入数据(JSON)
+    ├── examples/           # 渲染成品参考图(两主题 × 两布局)
     ├── references/         # 风格指南等参考资料
     └── scripts/            # 渲染脚本
 ```

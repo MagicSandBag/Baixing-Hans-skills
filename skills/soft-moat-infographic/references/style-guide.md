@@ -4,11 +4,32 @@
 
 The reference images are JPEG exports at 1080 x 576 and 1080 x 541. Their metadata does not identify the originating software. Observable traits point to a browser/Figma-like layout rather than hand drawing: fixed grid columns, text blocks aligned to consistent margins, translucent card fills, CSS-like gradients, subtle borders, and oversized low-opacity watermark typography. Treat the original source as unknowable from the JPEG alone; reproduce the style with HTML/CSS by default.
 
+## Themes
+
+Two built-in themes, selected via the `"theme"` field. The Visual DNA below describes `classic`; `social-pink` swaps the palette while keeping the same layout DNA.
+
+### classic (default)
+
+Cool off-white paper, teal/blue duality. See Visual DNA for the full token list.
+
+### social-pink
+
+Bilibili-inspired social pink (source: B站 brand spec — primary pink `#FB7299`, secondary blue `#00A1D6`).
+
+- Canvas: blush paper `#FBF6F7` with faint pink/blue washes; page bg `#F6F7F8`.
+- Ink: `#18191C` main, `#61666D` secondary, `#9499A0` tertiary (B站 neutral ramp).
+- Eyebrow pill (cards): gradient `#FF9DB6 → #FB7299`; flow title/eyebrow: deep pink `#F26183`.
+- Note boxes and arrows lean on deepened B站 blue (`#2A87B0`, `#3FA9D3`) for the pink/blue duality.
+- Watermark and map lines: muted rose (`rgba(196,122,148,0.05)`, `#DCA0B2`, `#D9C9CF`).
+- Card accents (theme-scoped): `pink` `#FB7299`, `blue` `#00A1D6`, `sky` `#0CB6F2`, `amber` `#FF9D00`, `green` `#00B853`, `coral` `#FF6B6B`, `gray` `#9499A0`. Default `pink`.
+
+Keep the same restraint as classic: neutral canvas dominates, accents are sparse, one dominant accent plus supporting hues.
+
 ## Visual DNA
 
 - Airy white canvas, slightly cool: `#F2F5F8`, `#F6F8FA`, `#F2F7F9`.
 - Main ink: `#252B38`; secondary ink: `#596473`; tertiary ink: `#8791A0`.
-- Accent palette:
+- Accent palette (classic):
   - teal: `#18B89F`
   - mint: `#33C0A3`
   - blue: `#347EDC`

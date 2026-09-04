@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Render soft pastel Chinese infographic HTML and optionally export an image."""
+"""Render soft pastel Chinese infographic HTML and optionally export an image.
+
+Supports pluggable themes via the top-level "theme" JSON field or --theme.
+"classic" preserves the original cool off-white look; "social-pink" is a
+Bilibili-inspired blush palette.
+"""
 
 from __future__ import annotations
 
@@ -11,19 +16,83 @@ from pathlib import Path
 from typing import Any
 
 
-PALETTE: dict[str, dict[str, str]] = {
-    "teal": {"accent": "#18B89F", "soft": "rgba(24, 184, 159, 0.09)", "border": "rgba(24, 184, 159, 0.24)"},
-    "mint": {"accent": "#33C0A3", "soft": "rgba(51, 192, 163, 0.09)", "border": "rgba(51, 192, 163, 0.24)"},
-    "blue": {"accent": "#347EDC", "soft": "rgba(52, 126, 220, 0.08)", "border": "rgba(52, 126, 220, 0.21)"},
-    "cobalt": {"accent": "#3858D6", "soft": "rgba(56, 88, 214, 0.08)", "border": "rgba(56, 88, 214, 0.20)"},
-    "violet": {"accent": "#9A64E8", "soft": "rgba(154, 100, 232, 0.09)", "border": "rgba(154, 100, 232, 0.20)"},
-    "amber": {"accent": "#E28B14", "soft": "rgba(226, 139, 20, 0.09)", "border": "rgba(226, 139, 20, 0.22)"},
-    "gray": {"accent": "#8FA0B3", "soft": "rgba(143, 160, 179, 0.08)", "border": "rgba(143, 160, 179, 0.20)"},
+THEMES: dict[str, dict[str, Any]] = {
+    # Cool off-white paper, teal/blue accents. The original look; default.
+    "classic": {
+        "default_accent": "teal",
+        "accents": {
+            "teal": {"accent": "#18B89F", "soft": "rgba(24, 184, 159, 0.09)", "border": "rgba(24, 184, 159, 0.24)"},
+            "mint": {"accent": "#33C0A3", "soft": "rgba(51, 192, 163, 0.09)", "border": "rgba(51, 192, 163, 0.24)"},
+            "blue": {"accent": "#347EDC", "soft": "rgba(52, 126, 220, 0.08)", "border": "rgba(52, 126, 220, 0.21)"},
+            "cobalt": {"accent": "#3858D6", "soft": "rgba(56, 88, 214, 0.08)", "border": "rgba(56, 88, 214, 0.20)"},
+            "violet": {"accent": "#9A64E8", "soft": "rgba(154, 100, 232, 0.09)", "border": "rgba(154, 100, 232, 0.20)"},
+            "amber": {"accent": "#E28B14", "soft": "rgba(226, 139, 20, 0.09)", "border": "rgba(226, 139, 20, 0.22)"},
+            "gray": {"accent": "#8FA0B3", "soft": "rgba(143, 160, 179, 0.08)", "border": "rgba(143, 160, 179, 0.20)"},
+        },
+        "tokens": {
+            "page-bg": "#EDEFF3",
+            "ink": "#252B38",
+            "heading-ink": "#171D2A",
+            "subtitle-ink": "#596270",
+            "body-ink": "#354052",
+            "credit-ink": "#737D88",
+            "note-ink": "#2C5B9B",
+            "arrow-ink": "#4A89CE",
+            "flow-accent": "#15A891",
+            "eyebrow-bg": "linear-gradient(90deg, #2F7CE6, #12B697)",
+            "watermark-ink": "rgba(88, 143, 154, 0.052)",
+            "map-line-a": "#7EA9B7",
+            "map-line-b": "#C6CDD8",
+            "card-shadow": "rgba(35, 47, 68, 0.034)",
+            "canvas-bg": (
+                "linear-gradient(118deg, rgba(255,255,255,0.98), rgba(242,248,250,0.93) 44%, rgba(252,250,247,0.96)),\n"
+                "    linear-gradient(72deg, rgba(44,126,204,0.045), transparent 36%, rgba(26,184,159,0.045) 78%, transparent),\n"
+                "    repeating-linear-gradient(90deg, rgba(42,70,96,0.014) 0 1px, transparent 1px 72px),\n"
+                "    #F5F7FA"
+            ),
+        },
+    },
+    # Bilibili-inspired social pink: blush paper, pink/blue duality.
+    "social-pink": {
+        "default_accent": "pink",
+        "accents": {
+            "pink": {"accent": "#FB7299", "soft": "rgba(251, 114, 153, 0.09)", "border": "rgba(251, 114, 153, 0.24)"},
+            "blue": {"accent": "#00A1D6", "soft": "rgba(0, 161, 214, 0.08)", "border": "rgba(0, 161, 214, 0.22)"},
+            "sky": {"accent": "#0CB6F2", "soft": "rgba(12, 182, 242, 0.09)", "border": "rgba(12, 182, 242, 0.22)"},
+            "amber": {"accent": "#FF9D00", "soft": "rgba(255, 157, 0, 0.09)", "border": "rgba(255, 157, 0, 0.22)"},
+            "green": {"accent": "#00B853", "soft": "rgba(0, 184, 83, 0.08)", "border": "rgba(0, 184, 83, 0.20)"},
+            "coral": {"accent": "#FF6B6B", "soft": "rgba(255, 107, 107, 0.09)", "border": "rgba(255, 107, 107, 0.22)"},
+            "gray": {"accent": "#9499A0", "soft": "rgba(148, 153, 160, 0.08)", "border": "rgba(148, 153, 160, 0.20)"},
+        },
+        "tokens": {
+            "page-bg": "#F6F7F8",
+            "ink": "#18191C",
+            "heading-ink": "#18191C",
+            "subtitle-ink": "#61666D",
+            "body-ink": "#3E434C",
+            "credit-ink": "#9499A0",
+            "note-ink": "#2A87B0",
+            "arrow-ink": "#3FA9D3",
+            "flow-accent": "#F26183",
+            "eyebrow-bg": "linear-gradient(90deg, #FF9DB6, #FB7299)",
+            "watermark-ink": "rgba(196, 122, 148, 0.05)",
+            "map-line-a": "#DCA0B2",
+            "map-line-b": "#D9C9CF",
+            "card-shadow": "rgba(122, 58, 80, 0.04)",
+            "canvas-bg": (
+                "linear-gradient(118deg, rgba(255,255,255,0.98), rgba(255,241,245,0.94) 44%, rgba(255,249,243,0.97)),\n"
+                "    linear-gradient(72deg, rgba(251,114,153,0.05), transparent 36%, rgba(0,161,214,0.05) 78%, transparent),\n"
+                "    repeating-linear-gradient(90deg, rgba(110,56,74,0.014) 0 1px, transparent 1px 72px),\n"
+                "    #FBF6F7"
+            ),
+        },
+    },
 }
 
 
 DEFAULT_DATA: dict[str, Any] = {
     "layout": "cards",
+    "theme": "classic",
     "width": 1080,
     "height": 576,
     "eyebrow": "AI MODEL GUIDE",
@@ -81,6 +150,17 @@ DEFAULT_DATA: dict[str, Any] = {
 }
 
 
+def resolve_theme(data: dict[str, Any]) -> dict[str, Any]:
+    key = str(data.get("theme") or "classic").lower()
+    if key not in THEMES:
+        raise ValueError(f"theme must be one of: {', '.join(sorted(THEMES))}; got '{key}'")
+    return THEMES[key]
+
+
+def theme_css_vars(theme: dict[str, Any]) -> str:
+    return "\n".join(f"  --{key}: {value};" for key, value in theme["tokens"].items())
+
+
 def esc(value: Any) -> str:
     return html.escape("" if value is None else str(value), quote=True)
 
@@ -95,13 +175,14 @@ def paragraph_html(value: Any) -> str:
     return f"<p>{text}</p>" if text else ""
 
 
-def tone_style(name: str) -> str:
-    tone = PALETTE.get(name, PALETTE["teal"])
+def tone_style(name: str, theme: dict[str, Any]) -> str:
+    accents: dict[str, dict[str, str]] = theme["accents"]
+    tone = accents.get(name) or accents[theme["default_accent"]]
     return f"--accent:{tone['accent']};--soft:{tone['soft']};--line:{tone['border']};"
 
 
-def render_card(card: dict[str, Any], layout: str) -> str:
-    accent = str(card.get("accent", "teal"))
+def render_card(card: dict[str, Any], layout: str, theme: dict[str, Any]) -> str:
+    accent = str(card.get("accent") or theme["default_accent"])
     metric = esc(card.get("metric", ""))
     suffix = esc(card.get("metric_suffix", ""))
     metric_html = ""
@@ -112,7 +193,7 @@ def render_card(card: dict[str, Any], layout: str) -> str:
     badge = esc(card.get("badge", ""))
     badge_html = f'<div class="badge">{badge}</div>' if badge else ""
     return f"""
-      <section class="card {layout}-card" style="{tone_style(accent)}">
+      <section class="card {layout}-card" style="{tone_style(accent, theme)}">
         <div class="label">{esc(card.get("label", ""))}</div>
         <h2>{esc(card.get("heading", ""))}</h2>
         {metric_html}
@@ -124,18 +205,18 @@ def render_card(card: dict[str, Any], layout: str) -> str:
     """
 
 
-def render_cards(data: dict[str, Any]) -> str:
+def render_cards(data: dict[str, Any], theme: dict[str, Any]) -> str:
     cards = data.get("cards") or []
     count = max(1, len(cards))
-    cards_html = "\n".join(render_card(card, "cards") for card in cards)
+    cards_html = "\n".join(render_card(card, "cards", theme) for card in cards)
     return f'<div class="cards-grid" style="--count:{count};">{cards_html}</div>'
 
 
-def render_flow(data: dict[str, Any]) -> str:
+def render_flow(data: dict[str, Any], theme: dict[str, Any]) -> str:
     cards = data.get("cards") or []
     parts: list[str] = ['<div class="flow-grid">']
     for index, card in enumerate(cards):
-        parts.append(render_card(card, "flow"))
+        parts.append(render_card(card, "flow", theme))
         if index < len(cards) - 1:
             parts.append('<div class="arrow">→</div>')
     parts.append("</div>")
@@ -146,10 +227,11 @@ def build_html(data: dict[str, Any]) -> str:
     layout = str(data.get("layout", "cards")).lower()
     if layout not in {"cards", "flow"}:
         raise ValueError("layout must be 'cards' or 'flow'")
+    theme = resolve_theme(data)
 
     width = int(data.get("width") or 1080)
     height = int(data.get("height") or (541 if layout == "flow" else 576))
-    content = render_flow(data) if layout == "flow" else render_cards(data)
+    content = render_flow(data, theme) if layout == "flow" else render_cards(data, theme)
     eyebrow = esc(data.get("eyebrow", ""))
     title = esc(data.get("title", ""))
     subtitle = esc(data.get("subtitle", ""))
@@ -159,7 +241,7 @@ def build_html(data: dict[str, Any]) -> str:
     title_html = f"<h1>{title}</h1>" if title else ""
     bg_map = f"""
     <svg class="bg-map" viewBox="0 0 {width} {height}" preserveAspectRatio="none" aria-hidden="true">
-      <g stroke="#7EA9B7" stroke-width="1.1" stroke-opacity="0.10">
+      <g class="map-a" stroke-width="1.1" stroke-opacity="0.10">
         <path d="M610 60 C675 20 760 34 815 84 C870 134 950 118 1038 170" />
         <path d="M650 105 C718 70 777 82 831 128 C886 175 966 160 1054 214" />
         <path d="M698 150 C756 125 820 138 870 178 C930 226 992 220 1082 254" />
@@ -168,7 +250,7 @@ def build_html(data: dict[str, Any]) -> str:
         <path d="M120 380 C190 338 278 344 340 392 C415 452 505 434 570 492" />
         <path d="M76 420 C162 382 250 392 322 444 C392 494 494 482 626 526" />
       </g>
-      <g stroke="#C6CDD8" stroke-width="0.9" stroke-opacity="0.12">
+      <g class="map-b" stroke-width="0.9" stroke-opacity="0.12">
         <path d="M42 160 C128 138 214 146 302 182 C385 216 480 212 560 178" />
         <path d="M46 206 C142 184 235 194 320 230 C412 270 500 260 585 220" />
         <path d="M36 254 C132 238 226 250 314 288 C404 326 502 318 608 270" />
@@ -184,13 +266,10 @@ def build_html(data: dict[str, Any]) -> str:
 <title>{title}</title>
 <style>
 :root {{
-  --ink: #252B38;
-  --muted: #5A6472;
-  --quiet: #8791A0;
-  --paper: #F5F7FA;
+{theme_css_vars(theme)}
 }}
 * {{ box-sizing: border-box; }}
-html, body {{ margin: 0; background: #EDEFF3; }}
+html, body {{ margin: 0; background: var(--page-bg); }}
 body {{
   font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Source Han Sans SC", Arial, sans-serif;
   color: var(--ink);
@@ -200,11 +279,7 @@ body {{
   width: {width}px;
   height: {height}px;
   overflow: hidden;
-  background:
-    linear-gradient(118deg, rgba(255,255,255,0.98), rgba(242,248,250,0.93) 44%, rgba(252,250,247,0.96)),
-    linear-gradient(72deg, rgba(44,126,204,0.045), transparent 36%, rgba(26,184,159,0.045) 78%, transparent),
-    repeating-linear-gradient(90deg, rgba(42,70,96,0.014) 0 1px, transparent 1px 72px),
-    #F5F7FA;
+  background: var(--canvas-bg);
 }}
 .canvas::before {{
   content: attr(data-watermark);
@@ -216,7 +291,7 @@ body {{
   line-height: 1;
   font-weight: 900;
   letter-spacing: 12px;
-  color: rgba(88, 143, 154, 0.052);
+  color: var(--watermark-ink);
   pointer-events: none;
   white-space: nowrap;
 }}
@@ -245,6 +320,8 @@ body {{
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }}
+.bg-map .map-a {{ stroke: var(--map-line-a); }}
+.bg-map .map-b {{ stroke: var(--map-line-b); }}
 .inner {{
   position: relative;
   z-index: 2;
@@ -263,7 +340,7 @@ body {{
   min-height: 24px;
   padding: 0 14px;
   border-radius: 8px;
-  background: linear-gradient(90deg, #2F7CE6, #12B697);
+  background: var(--eyebrow-bg);
   color: white;
   font-size: 10px;
   font-weight: 800;
@@ -272,7 +349,7 @@ body {{
 }}
 .layout-flow .eyebrow {{
   background: transparent;
-  color: #15A891;
+  color: var(--flow-accent);
   padding: 0;
   letter-spacing: 0;
   font-size: 26px;
@@ -288,11 +365,11 @@ h1 {{
 }}
 .layout-flow h1 {{
   margin-top: 0;
-  color: #15A891;
+  color: var(--flow-accent);
   font-size: 30px;
 }}
 .subtitle {{
-  color: #596270;
+  color: var(--subtitle-ink);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 6px;
@@ -318,7 +395,7 @@ h1 {{
     var(--soft);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.74),
-    0 14px 34px rgba(35, 47, 68, 0.034);
+    0 14px 34px var(--card-shadow);
   backdrop-filter: blur(6px);
   overflow: hidden;
 }}
@@ -353,7 +430,7 @@ h2 {{
   position: relative;
   z-index: 1;
   margin: 0;
-  color: #171D2A;
+  color: var(--heading-ink);
   font-size: 26px;
   line-height: 1.08;
   font-weight: 900;
@@ -384,7 +461,7 @@ h2 {{
 .body-copy {{
   position: relative;
   z-index: 1;
-  color: #354052;
+  color: var(--body-ink);
   font-size: 13px;
   font-weight: 600;
   line-height: 1.82;
@@ -399,7 +476,7 @@ h2 {{
   padding: 10px 14px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.38);
-  color: #2C5B9B;
+  color: var(--note-ink);
   font-size: 12px;
   font-weight: 800;
   line-height: 1.6;
@@ -426,7 +503,7 @@ h2 {{
   flex: 1;
 }}
 .arrow {{
-  color: #4A89CE;
+  color: var(--arrow-ink);
   font-size: 28px;
   font-weight: 500;
   text-align: center;
@@ -437,7 +514,7 @@ h2 {{
   right: 24px;
   bottom: 16px;
   z-index: 3;
-  color: #737D88;
+  color: var(--credit-ink);
   font-size: 10px;
   font-weight: 700;
 }}
@@ -516,6 +593,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, help="JSON payload. Uses demo content when omitted.")
     parser.add_argument("--output", type=Path, default=Path("soft-moat-infographic.png"), help="Output .png/.jpg/.jpeg/.html path.")
+    parser.add_argument("--theme", choices=sorted(THEMES), default=None, help="Theme override; defaults to the JSON 'theme' field or 'classic'.")
     parser.add_argument("--html-only", action="store_true", help="Only write HTML, even when output is an image path.")
     parser.add_argument("--scale", type=float, default=3.0, help="Browser device scale factor for image export. Use 3 for high-resolution social graphics.")
     parser.add_argument("--quality", type=int, default=95, help="JPEG quality, 1-100.")
@@ -525,6 +603,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str]) -> int:
     args = parse_args(argv)
     data = read_data(args.input)
+    if args.theme:
+        data["theme"] = args.theme
     width = int(data.get("width") or 1080)
     height = int(data.get("height") or (541 if data.get("layout") == "flow" else 576))
     output_path: Path = args.output

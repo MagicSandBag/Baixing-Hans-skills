@@ -11,25 +11,37 @@ Default to **HTML/CSS rendered to image**. The reference style is text-heavy, gr
 
 ## Workflow
 
-1. Distill the source notes into one sharp thesis.
-2. Choose a layout:
+1. Ask the user which theme to use before the first render (see Themes). Default to `classic` when they decline or want the usual look.
+2. Distill the source notes into one sharp thesis.
+3. Choose a layout:
    - `cards`: 4-6 vertical comparison cards, best for model/tool/option comparisons.
    - `flow`: 3 large cards connected by arrows, best for a causal argument or market evolution.
-3. Write concise Chinese copy:
+4. Write concise Chinese copy:
    - Title: 10-18 Chinese characters if possible.
    - Subtitle: uppercase English or pinyin-style microcopy with generous letter spacing.
    - Card labels: 4-8 Chinese characters.
    - Metrics: one large number, price, multiplier, or symbol per card when useful.
    - Body: 1-3 short lines. Avoid dense paragraphs.
-4. Render with `scripts/render_moat_infographic.py` when an editable HTML plus image export is useful.
-5. Verify visually: no clipped Chinese text, no line too long, cards aligned, accent colors balanced, watermark faint enough to stay background-only.
+5. Render with `scripts/render_moat_infographic.py` when an editable HTML plus image export is useful.
+6. Verify visually: no clipped Chinese text, no line too long, cards aligned, accent colors balanced, watermark faint enough to stay background-only.
+
+## Themes
+
+Set via the top-level `"theme"` JSON field or the `--theme` CLI flag:
+
+- `classic` — cool off-white paper, teal/blue-leaning accents, blue→green eyebrow pill. Card accents: `teal`, `mint`, `blue`, `cobalt`, `violet`, `amber`, `gray` (default `teal`).
+- `social-pink` — Bilibili-inspired social pink: blush paper canvas, pink/blue duality, pink gradient eyebrow pill. Card accents: `pink`, `blue`, `sky`, `amber`, `green`, `coral`, `gray` (default `pink`).
+
+Accent names are theme-scoped; an unknown name falls back to the theme default. Prefer one dominant accent plus supporting accents over a uniform rainbow.
 
 ## Quick Start
 
-Create a JSON payload and render it:
+All paths below are relative to this skill's directory (the folder containing this `SKILL.md`), so the skill works from any install location.
+
+Create a JSON payload and render it, from the skill directory:
 
 ```bash
-python C:/Users/28412/.codex/skills/soft-moat-infographic/scripts/render_moat_infographic.py --input data.json --output output.png --scale 3
+python scripts/render_moat_infographic.py --input data.json --output output.png --scale 3
 ```
 
 The script always writes a sibling `.html` file. If Playwright is installed, it also exports PNG/JPEG. If Playwright is unavailable, open the HTML in a browser and export/screenshot from there, or install Playwright for automated rendering.
@@ -39,15 +51,19 @@ Use `--scale 3` or `--scale 4` for final PNG exports. A 1080 x 576 design become
 Use the bundled examples as starting points:
 
 ```bash
-python C:/Users/28412/.codex/skills/soft-moat-infographic/scripts/render_moat_infographic.py --input C:/Users/28412/.codex/skills/soft-moat-infographic/assets/example_cards.json --output cards.png
-python C:/Users/28412/.codex/skills/soft-moat-infographic/scripts/render_moat_infographic.py --input C:/Users/28412/.codex/skills/soft-moat-infographic/assets/example_flow.json --output flow.png
+python scripts/render_moat_infographic.py --input assets/example_cards.json --output cards.png
+python scripts/render_moat_infographic.py --input assets/example_flow.json --output flow.png
+python scripts/render_moat_infographic.py --input assets/example_cards_pink.json --output cards_pink.png
 ```
+
+Rendered reference outputs for both themes and both layouts live in `examples/` (`classic_cards`, `classic_flow`, `social_pink_cards`, `social_pink_flow`). Show them to the user when they are choosing a theme.
 
 ## Input Schema
 
 ```json
 {
   "layout": "cards",
+  "theme": "classic",
   "width": 1080,
   "height": 576,
   "eyebrow": "AI MODEL GUIDE · BY NAME",
@@ -69,7 +85,7 @@ python C:/Users/28412/.codex/skills/soft-moat-infographic/scripts/render_moat_in
 }
 ```
 
-For `flow`, keep three cards and optionally set `note` for each card. The script accepts `accent` values: `teal`, `mint`, `blue`, `cobalt`, `violet`, `amber`, `gray`.
+For `flow`, keep three cards and optionally set `note` for each card. `accent` values are theme-scoped; see Themes above.
 
 ## Style Reference
 
