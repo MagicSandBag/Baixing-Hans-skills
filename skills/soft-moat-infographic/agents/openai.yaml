@@ -1,0 +1,4 @@
+interface:
+  display_name: "Soft Moat Infographic"
+  short_description: "Generate soft pastel Chinese information graphics."
+  default_prompt: "Use $soft-moat-infographic to create a soft pastel Chinese information graphic from my notes."

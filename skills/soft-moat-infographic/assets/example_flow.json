@@ -1,0 +1,39 @@
+{
+  "layout": "flow",
+  "width": 1080,
+  "height": 541,
+  "eyebrow": "AI 带货的竞争终局",
+  "title": "",
+  "subtitle": "WHEN COST APPROACHES ZERO · WHAT REMAINS IS THE MOAT",
+  "watermark": "AI",
+  "credit": "by @白星Hans",
+  "cards": [
+    {
+      "label": "当前阶段 · 正在失效",
+      "heading": "产量竞争",
+      "metric": "100",
+      "metric_suffix": "",
+      "body": "一旦生成成本足够低，产量不再是护城河。",
+      "note": "谁能做得更多，这个答案很快会失效",
+      "accent": "gray"
+    },
+    {
+      "label": "决胜中期 · 人和 AI 的差距",
+      "heading": "脚本质量",
+      "metric": "3-5x",
+      "metric_suffix": "",
+      "body": "同一套工具，不同判断会拉开点击、停留和转化。",
+      "note": "短期内有效，但可以被模仿",
+      "accent": "blue"
+    },
+    {
+      "label": "终局壁垒 · 不可复制",
+      "heading": "语料资产",
+      "metric": "∞",
+      "metric_suffix": "",
+      "body": "提示词库、爆款脚本、品类数据和用户反馈持续复利。",
+      "note": "工具会过时，方法论不会。语料才是 AI 时代最值钱的资产",
+      "accent": "teal"
+    }
+  ]
+}

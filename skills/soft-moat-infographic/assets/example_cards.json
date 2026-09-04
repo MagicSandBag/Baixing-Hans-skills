@@ -1,0 +1,57 @@
+{
+  "layout": "cards",
+  "width": 1080,
+  "height": 576,
+  "eyebrow": "AI MODEL GUIDE · BY NAME",
+  "title": "没有最强的模型，只有最对的",
+  "subtitle": "5 MODELS · USE CASE · COST · OUTPUT QUALITY",
+  "watermark": "AI",
+  "credit": "by @白星Hans",
+  "cards": [
+    {
+      "label": "品牌片",
+      "heading": "旗舰模型",
+      "metric": "¥15",
+      "metric_suffix": "/条",
+      "body": "画质上限最高，适合品牌正式宣传和高预算投放。",
+      "badge": "画质最高",
+      "accent": "cobalt"
+    },
+    {
+      "label": "种草内容",
+      "heading": "实拍模型",
+      "metric": "¥3",
+      "metric_suffix": "/条",
+      "body": "质感接近实拍，适合批量测试脚本和素材方向。",
+      "badge": "真实感强",
+      "accent": "teal"
+    },
+    {
+      "label": "草稿验证",
+      "heading": "低价模型",
+      "metric": "¥0.5",
+      "metric_suffix": "/条",
+      "body": "成本低，适合先跑分镜和概念，不追求单条成片。",
+      "badge": "量大管够",
+      "accent": "amber"
+    },
+    {
+      "label": "叙事故事",
+      "heading": "长镜模型",
+      "metric": "按需",
+      "metric_suffix": "计费",
+      "body": "多镜头转场自然，适合叙事型产品内容。",
+      "badge": "转场自然",
+      "accent": "blue"
+    },
+    {
+      "label": "长片内容",
+      "heading": "结构模型",
+      "metric": "按需",
+      "metric_suffix": "计费",
+      "body": "支持更长的视频结构，适合课程、解说和故事类内容。",
+      "badge": "长片友好",
+      "accent": "violet"
+    }
+  ]
+}
