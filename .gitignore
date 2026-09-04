@@ -22,3 +22,6 @@ dist/
 build/
 *.log
 tmp/
+
+# Local-only: downloaded third-party skills kept for reference
+reference/
