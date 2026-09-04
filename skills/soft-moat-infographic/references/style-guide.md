@@ -91,7 +91,7 @@ Use when explaining a market transition, causal chain, or strategic conclusion.
 
 ## Background Treatment
 
-Use one very faint oversized watermark word such as `AI`, `MODEL`, `MOAT`, or the topic keyword. It should sit behind the content and be barely readable. Add a high-transparency map/topographic line layer when the image needs more depth: 0.10-0.20 stroke opacity, muted teal/gray strokes, no filled shapes, and no lines competing with text. Avoid decorative bubbles, strong radial blobs, and saturated gradient backgrounds. The background should feel like paper plus light passing through frosted glass.
+Use one very faint oversized watermark word such as `AI`, `MODEL`, `MOAT`, or the topic keyword. It should sit behind the content and be barely readable. Use watermark ink at 0.09 alpha — the white texture overlay on top halves it again, so the effective visibility lands around 4-5%. Add a high-transparency map/topographic line layer when the image needs more depth: 0.10-0.20 stroke opacity, muted teal/gray strokes, no filled shapes, and no lines competing with text. Avoid decorative bubbles, strong radial blobs, and saturated gradient backgrounds. The background should feel like paper plus light passing through frosted glass.
 
 ## Information Architecture
 
